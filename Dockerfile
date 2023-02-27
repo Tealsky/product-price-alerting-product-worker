@@ -51,6 +51,8 @@ RUN set -eux; \
     	zip \
     	apcu \
 		opcache \
+        pcntl \
+        sockets \
     ;
 
 ###> recipes ###

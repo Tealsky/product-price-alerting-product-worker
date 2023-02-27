@@ -1,5 +1,9 @@
 version: "3.4"
 
+networks:
+  worker:
+    driver: bridge
+
 services:
   php:
     build:
@@ -52,6 +56,22 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
+    networks:
+      - worker
+
+  rabbitmq:
+    image: rabbitmq:3.11.9-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST:-!ChangeMe!}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-!ChangeMe!}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-!ChangeMe!}
+    volumes:
+      - "./docker/rabbitmq/rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
+    networks:
+      - worker
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
